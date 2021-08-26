@@ -1,0 +1,74 @@
+diff --git a/mkspecs/arm-kobo-linux-gnueabihf-g++/qmake.conf b/mkspecs/arm-kobo-linux-gnueabihf-g++/qmake.conf
+new file mode 100644
+index 0000000000..e7f81598b7
+--- /dev/null
++++ b/mkspecs/arm-kobo-linux-gnueabihf-g++/qmake.conf
+@@ -0,0 +1,33 @@
++#
++# Kobo qmake configuration
++#
++
++MAKEFILE_GENERATOR      = UNIX
++CONFIG                 += incremental gdb_dwarf_index
++QMAKE_INCREMENTAL_STYLE = sublib
++
++include(../common/linux.conf)
++include(../common/gcc-base-unix.conf)
++include(../common/g++-unix.conf)
++
++
++QMAKE_CFLAGS_RELEASE   = -O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mthumb -pipe -D__arm__ -D__ARM_NEON__ -fPIC -fno-omit-frame-pointer -funwind-tables -Wl,--no-merge-exidx-entries
++
++QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO = $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO -g
++
++QMAKE_CXXFLAGS_RELEASE = $$QMAKE_CFLAGS_RELEASE
++QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO = $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
++
++# modifications to g++.conf
++QMAKE_CC                = arm-kobo-linux-gnueabihf-gcc
++QMAKE_CXX               = arm-kobo-linux-gnueabihf-g++
++QMAKE_LINK              = arm-kobo-linux-gnueabihf-g++
++QMAKE_LINK_SHLIB        = arm-kobo-linux-gnueabihf-g++
++
++# modifications to linux.conf
++QMAKE_AR                = arm-kobo-linux-gnueabihf-ar cqs
++QMAKE_OBJCOPY           = arm-kobo-linux-gnueabihf-objcopy
++QMAKE_NM                = arm-kobo-linux-gnueabihf-nm -P
++QMAKE_STRIP             = arm-kobo-linux-gnueabihf-strip
++
++load(qt_config)
+diff --git a/mkspecs/arm-kobo-linux-gnueabihf-g++/qplatformdefs.h b/mkspecs/arm-kobo-linux-gnueabihf-g++/qplatformdefs.h
+new file mode 100644
+index 0000000000..05c77d16fd
+--- /dev/null
++++ b/mkspecs/arm-kobo-linux-gnueabihf-g++/qplatformdefs.h
+@@ -0,0 +1,2 @@
++
++#include "../linux-g++/qplatformdefs.h"
+diff --git a/src/corelib/global/qglobal.h b/src/corelib/global/qglobal.h
+index 12ac48f3cb..7ec78c7183 100644
+--- a/src/corelib/global/qglobal.h
++++ b/src/corelib/global/qglobal.h
+@@ -140,6 +140,7 @@
+ #ifdef __cplusplus
+ 
+ #include <algorithm>
++#include <limits>
+ 
+ #if !defined(QT_NAMESPACE) || defined(Q_MOC_RUN) /* user namespace */
+ 
+diff --git a/src/widgets/util/qscrollerproperties.cpp b/src/widgets/util/qscrollerproperties.cpp
+index be763f182e..7c3fe294f6 100644
+--- a/src/widgets/util/qscrollerproperties.cpp
++++ b/src/widgets/util/qscrollerproperties.cpp
+@@ -70,8 +70,8 @@ QScrollerPropertiesPrivate *QScrollerPropertiesPrivate::defaults()
+         spp.overshootDragDistanceFactor = qreal(1);
+         spp.overshootScrollDistanceFactor = qreal(0.5);
+         spp.overshootScrollTime = qreal(0.7);
+-        spp.hOvershootPolicy = QScrollerProperties::OvershootWhenScrollable;
+-        spp.vOvershootPolicy = QScrollerProperties::OvershootWhenScrollable;
++        spp.hOvershootPolicy = QScrollerProperties::OvershootAlwaysOff;
++        spp.vOvershootPolicy = QScrollerProperties::OvershootAlwaysOff;
+         spp.frameRate = QScrollerProperties::Standard;
+ 
+         systemDefaults = new QScrollerPropertiesPrivate(spp);
