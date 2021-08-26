@@ -1,4 +1,4 @@
-# exit when any command fails
+#!/bin/bash
 set -e
 
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

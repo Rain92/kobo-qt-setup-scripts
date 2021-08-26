@@ -1,6 +1,6 @@
-# exit when any command fails
+#!/bin/bash
 set -e
 
-cd koxtoolchain
+./koxtoolchain/gen-tc.sh kobo
 
-./gen-tc.sh kobo
+chmod -R +rwx home/${USER}/x-tools
