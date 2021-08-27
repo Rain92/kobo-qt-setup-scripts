@@ -12,11 +12,13 @@ CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
 SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
 CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
-PREFIX=${PREFIX:=/home/${USER}/qt-bin/${LOCALREPO}}
+
+PREFIX_KOBO=${PREFIX:=/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
+PREFIX_DESKTOP=${PREFIX:=/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
 CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -prefix /mnt/onboard/.adds/${LOCALREPO} \
- -extprefix $PREFIX \
+ -extprefix $PREFIX_KOBO \
  -xplatform ${CROSS_TC}-g++ \
  -sysroot ${SYSROOT} \
  -openssl-linked OPENSSL_PREFIX="${SYSROOT}/usr" \
@@ -28,7 +30,7 @@ CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -no-feature-printdialog -no-feature-printer -no-feature-printpreviewdialog -no-feature-printpreviewwidget"
 
 CONFIG_DESKTOP="--recheck-all -opensource -confirm-license -release -verbose \
- -prefix $PREFIX  \
+ -prefix $PREFIX_DESKTOP  \
  -openssl \
  -system-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
  -no-tslib -no-icu -no-iconv -no-dbus -no-fontconfig \
@@ -50,11 +52,13 @@ case  ${1:-kobo} in
         platform=kobo
         config=$CONFIG_KOBO
         localrepo=$LOCALREPO_KOBO
+        PREFIX=$PREFIX_KOBO
         ;;
     desktop)
         platform=desktop
         config=$CONFIG_DESKTOP
         localrepo=$LOCALREPO_DESKTOP
+        PREFIX=$PREFIX_DESKTOP
         ;;
     *)
         echo "Missing platform argument, defaulting to kobo"
