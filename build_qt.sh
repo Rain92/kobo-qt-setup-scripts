@@ -13,8 +13,8 @@ CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
 CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
 
-PREFIX_KOBO=${PREFIX:=/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
-PREFIX_DESKTOP=${PREFIX:=/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
+PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
+PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
 CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -prefix /mnt/onboard/.adds/${LOCALREPO} \
