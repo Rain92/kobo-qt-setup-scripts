@@ -3,9 +3,11 @@ set -e
 
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-export CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
-export SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
-export CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
+CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
+
+SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
+CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
+PREFIX=${PREFIX:=${SYSROOT}/usr}
 
 
 export AR=${CROSS}-ar
@@ -22,23 +24,20 @@ CFLAGS_OPT1="${CFLAGS_BASE} -ftree-vectorize -ffast-math -frename-registers -fun
 
 CFLAGS_LTO="${CFLAGS_OPT1} -fdevirtualize-at-ltrans -flto=5"
 
-#export CFLAGS=$CFLAGS_BASE
-export CFLAGS=$CFLAGS_OPT1
-#export CFLAGS=$CFLAGS_LTO
-
 get_clean_repo()
 {
-    cd ${LIBDIR}
+    mkdir -p ${LIBDIR}/libs
+    cd ${LIBDIR}/libs
     git clone $REPO $LOCALREPO || git -C $LOCALREPO pull
-    cd ${LIBDIR}/${LOCALREPO}
+    cd ${LIBDIR}/libs/${LOCALREPO}
     git reset --hard
     git clean -fdx
-    if test -f ../patches/${LOCALREPO}.patch; then
-        git apply ../patches/${LOCALREPO}.patch
+    if test -f ${LIBDIR}/patches/${LOCALREPO}.patch; then
+        git apply ${LIBDIR}/patches/${LOCALREPO}.patch
     fi
 }
 
-
+# build zlib-ng without LTO
 export CFLAGS=$CFLAGS_OPT1
 
 #zlib-ng
@@ -47,19 +46,18 @@ REPO=https://github.com/zlib-ng/zlib-ng
 LOCALREPO=zlib-ng
 get_clean_repo
 
-./configure --prefix=${SYSROOT}/usr --zlib-compat
+./configure --prefix=${PREFIX} --zlib-compat
 make -j5 && make install
 
 
 export CFLAGS=$CFLAGS_LTO
-
 
 #pnglib
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
 get_clean_repo
 
-./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-arm-neon=check
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=check
 make -j5 && make install
 
 
@@ -69,9 +67,9 @@ REPO=https://github.com/libjpeg-turbo/libjpeg-turbo
 LOCALREPO=libjpeg-turbo
 get_clean_repo
 
-mkdir -p ${LIBDIR}/${LOCALREPO}/build
-cd ${LIBDIR}/${LOCALREPO}/build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${SYSROOT}/usr -DCMAKE_TOOLCHAIN_FILE=../${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
+mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
+cd ${LIBDIR}/libs/${LOCALREPO}/build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
 make -j5 && make install
 
 
@@ -80,9 +78,9 @@ REPO=https://github.com/libexpat/libexpat
 LOCALREPO=expat
 get_clean_repo
 
-cd ${LIBDIR}/${LOCALREPO}/expat
+cd ${LIBDIR}/libs/${LOCALREPO}/expat
 ./buildconf.sh
-./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC}
+./configure --prefix=${PREFIX} --host=${CROSS_TC}
 make -j5 && make install
 
 
@@ -91,7 +89,7 @@ REPO="--single-branch --branch OpenSSL_1_1_1-stable https://github.com/openssl/o
 LOCALREPO=openssl-1.1.1
 get_clean_repo
 
-./Configure linux-elf no-comp no-asm shared --prefix=${SYSROOT}/usr --openssldir=${SYSROOT}/usr
+./Configure linux-elf no-comp no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
 make -j5 && make install_sw 
 
 
@@ -101,7 +99,7 @@ LOCALREPO=pcre
 get_clean_repo
 
 ./autogen.sh
-./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-pcre2-16 --enable-jit --with-sysroot=${SYSROOT}
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-pcre2-16 --enable-jit --with-sysroot=${SYSROOT}
 make -j5 && make install
 
   
@@ -111,7 +109,7 @@ LOCALREPO=freetype
 get_clean_repo
 
 sh autogen.sh
-./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-harfbuzz --without-png --disable-freetype-config
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-harfbuzz --without-png --disable-freetype-config
 make -j5 && make install
 
 
@@ -120,8 +118,8 @@ REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
 get_clean_repo
 
-sh autogen.sh --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
-#./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
+sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
+#./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 make -j5 && make install
 
 #libfreetype with harfbuzz
@@ -130,5 +128,5 @@ LOCALREPO=freetype
 get_clean_repo
 
 sh autogen.sh 
-./configure --prefix=${SYSROOT}/usr --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --with-harfbuzz --with-png --disable-freetype-config
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --with-harfbuzz --with-png --disable-freetype-config
 make -j5 && make install
