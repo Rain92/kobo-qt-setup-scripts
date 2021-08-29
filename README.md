@@ -26,7 +26,7 @@ The default install directory is /home/${USER}/qt-bin.
 deploy_qt.sh will pack the necassary components of the Qt binaries to a single folder so they can be deployed on the the Kobo device.
 
 ## Installing a Debugger
-install_gbd.sh will download, compile and install both GDB and GDB-Server for debugging.
+install_gdb.sh will download, compile and install both GDB and GDB-Server for debugging.
 GDB will be installed in /home/${USER}/x-tools/arm-kobo-linux-gnueabihf/bin.
 GDB-Server will be installed in /home/${USER}/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/usr/bin and has to be transfered to deployed on the Kobo device.
 
