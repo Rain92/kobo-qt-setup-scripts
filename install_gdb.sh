@@ -16,8 +16,8 @@ wget -c ${URL} -O - | tar -xJ -C ${LIBDIR}/libs
 
 #gdb
 cd ${GDBDIR}
-mkdir -p build-gbd
-cd build-gbd
+mkdir -p build-gdb
+cd build-gdb
 rm -rf ./*
 ../configure --prefix=/home/${USER}/x-tools/${CROSS_TC} --target=${CROSS_TC}
 make -j5 && make install
