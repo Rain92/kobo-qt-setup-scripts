@@ -37,6 +37,7 @@ get_clean_repo()
     fi
 }
 
+
 # build zlib-ng without LTO
 export CFLAGS=$CFLAGS_OPT1
 
@@ -65,6 +66,17 @@ make -j5 && make install
 #needed: toolchain.cmake
 REPO=https://github.com/libjpeg-turbo/libjpeg-turbo
 LOCALREPO=libjpeg-turbo
+get_clean_repo
+
+mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
+cd ${LIBDIR}/libs/${LOCALREPO}/build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
+make -j5 && make install
+
+
+#brotli
+REPO=https://github.com/google/brotli
+LOCALREPO=brotli
 get_clean_repo
 
 mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
