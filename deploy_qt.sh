@@ -8,7 +8,7 @@ QTVERSIONMAJOR=5
 export CROSS_TC=arm-kobo-linux-gnueabihf
 
 export SYSROOT=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
-QTBINPATH=$DIR/qt-linux-$QTNAME-kobo
+QTBINPATH=/home/${USER}/qt-bin/qt-linux-$QTNAME-kobo
 
 OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
@@ -33,8 +33,12 @@ cp -r -t $TMPPATH/lib $ADDSPATH/*
 
 cp -t $TMPPATH/lib ${SYSROOT}/lib/libstdc++.so.6
 
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libssl.so.1.1
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libcrypto.so.1.1
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libssl.so.3
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libcrypto.so.3
+
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlicommon.so.1
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlidec.so.1
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlienc.so.1
 
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libz.so.1
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libjpeg.so.62 

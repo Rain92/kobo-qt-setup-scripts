@@ -53,6 +53,18 @@ make -j5 && make install
 
 export CFLAGS=$CFLAGS_LTO
 
+
+#openssl
+#REPO="--single-branch --branch OpenSSL_1_1_1-stable https://github.com/openssl/openssl"
+#LOCALREPO=openssl-1.1.1
+REPO="--single-branch --branch openssl-3.0 https://github.com/openssl/openssl"
+LOCALREPO=openssl-3.0
+get_clean_repo
+
+./Configure linux-elf no-comp no-tests no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
+make -j5 && make install_sw 
+
+
 #pnglib
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
@@ -73,18 +85,6 @@ cd ${LIBDIR}/libs/${LOCALREPO}/build
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
 make -j5 && make install
 
-
-#brotli
-REPO=https://github.com/google/brotli
-LOCALREPO=brotli
-get_clean_repo
-
-mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
-cd ${LIBDIR}/libs/${LOCALREPO}/build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
-make -j5 && make install
-
-
 #expat
 REPO=https://github.com/libexpat/libexpat
 LOCALREPO=expat
@@ -95,16 +95,6 @@ cd ${LIBDIR}/libs/${LOCALREPO}/expat
 ./configure --prefix=${PREFIX} --host=${CROSS_TC}
 make -j5 && make install
 
-
-#openssl
-REPO="--single-branch --branch OpenSSL_1_1_1-stable https://github.com/openssl/openssl"
-LOCALREPO=openssl-1.1.1
-get_clean_repo
-
-./Configure linux-elf no-comp no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
-make -j5 && make install_sw 
-
-
 #pcre
 REPO=https://github.com/rurban/pcre
 LOCALREPO=pcre
@@ -114,14 +104,25 @@ get_clean_repo
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-pcre2-16 --enable-jit --with-sysroot=${SYSROOT}
 make -j5 && make install
 
-  
+
+#brotli
+REPO="--branch v1.0.5 https://github.com/google/brotli"
+LOCALREPO=brotli
+get_clean_repo
+
+mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
+cd ${LIBDIR}/libs/${LOCALREPO}/build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
+make -j5 && make install
+
+
 #libfreetype without harfbuzz
 REPO=https://github.com/freetype/freetype
 LOCALREPO=freetype
 get_clean_repo
 
 sh autogen.sh
-./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-harfbuzz --without-png --disable-freetype-config
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --without-harfbuzz --without-png --disable-freetype-config
 make -j5 && make install
 
 
