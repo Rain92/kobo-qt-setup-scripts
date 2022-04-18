@@ -17,12 +17,12 @@ PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
 PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
 CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
- -prefix /mnt/onboard/.adds/${LOCALREPO} \
+ -prefix /mnt/onboard/.adds/${LOCALREPO_KOBO} \
  -extprefix $PREFIX_KOBO \
  -xplatform ${CROSS_TC}-g++ \
  -sysroot ${SYSROOT} \
  -openssl-linked OPENSSL_PREFIX="${SYSROOT}/usr" \
- -system-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
+ -qt-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
  -no-sse2 -no-xcb -no-xcb-xlib -no-xkbcommon -no-tslib -no-icu -no-iconv -no-dbus -no-fontconfig \
  -nomake tests -nomake examples -no-compile-examples -no-opengl \
  -no-cups -no-pch \
