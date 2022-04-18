@@ -36,10 +36,6 @@ cp -t $TMPPATH/lib ${SYSROOT}/lib/libstdc++.so.6
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libssl.so.3
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libcrypto.so.3
 
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlicommon.so.1
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlidec.so.1
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libbrotlienc.so.1
-
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libz.so.1
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libjpeg.so.62 
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libturbojpeg.so.0 
