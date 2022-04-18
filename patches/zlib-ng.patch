@@ -1,9 +1,9 @@
-diff --git a/arch/arm/armfeature.c b/arch/arm/armfeature.c
-index bef9b29..b64af0f 100644
---- a/arch/arm/armfeature.c
-+++ b/arch/arm/armfeature.c
-@@ -1,70 +1,14 @@
- #include "../../zutil.h"
+diff --git a/arch/arm/arm_features.c b/arch/arm/arm_features.c
+index 195c949..06f1a3e 100644
+--- a/arch/arm/arm_features.c
++++ b/arch/arm/arm_features.c
+@@ -1,70 +1,13 @@
+ #include "../../zbuild.h"
  
 -#if defined(__linux__)
 -#  include <sys/auxv.h>
@@ -20,7 +20,7 @@ index bef9b29..b64af0f 100644
 -#elif defined(_WIN32)
 -#  include <winapifamily.h>
 -#endif
- 
+-
  static int arm_has_crc32() {
 -#if defined(__linux__) && defined(ARM_AUXV_HAS_CRC32)
 -#  ifdef HWCAP_CRC32
@@ -73,16 +73,3 @@ index bef9b29..b64af0f 100644
  
  Z_INTERNAL int arm_cpu_has_neon;
  Z_INTERNAL int arm_cpu_has_crc32;
-diff --git a/configure b/configure
-index badaa0a..1d305c4 100755
---- a/configure
-+++ b/configure
-@@ -327,7 +327,7 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
-       fi
-       if test $buildacle -eq 1; then
-         if test $native -eq 0; then
--          ARCH=armv8-a+crc
-+          ARCH=armv7-a
-         fi
-       fi ;;
-     armv8l)

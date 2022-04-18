@@ -37,6 +37,8 @@ get_clean_repo()
     fi
 }
 
+export CFLAGS=$CFLAGS_LTO
+
 
 # build zlib-ng without LTO
 export CFLAGS=$CFLAGS_OPT1
@@ -105,17 +107,6 @@ get_clean_repo
 make -j5 && make install
 
 
-#brotli
-REPO="--branch v1.0.5 https://github.com/google/brotli"
-LOCALREPO=brotli
-get_clean_repo
-
-mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
-cd ${LIBDIR}/libs/${LOCALREPO}/build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE= ${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
-make -j5 && make install
-
-
 #libfreetype without harfbuzz
 REPO=https://github.com/freetype/freetype
 LOCALREPO=freetype
@@ -141,5 +132,5 @@ LOCALREPO=freetype
 get_clean_repo
 
 sh autogen.sh 
-./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --with-harfbuzz --with-png --disable-freetype-config
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --with-harfbuzz --with-png --disable-freetype-config
 make -j5 && make install
