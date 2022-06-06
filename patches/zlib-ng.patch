@@ -1,11 +1,11 @@
 diff --git a/arch/arm/arm_features.c b/arch/arm/arm_features.c
-index 195c949..06f1a3e 100644
+index 979204b..06f1a3e 100644
 --- a/arch/arm/arm_features.c
 +++ b/arch/arm/arm_features.c
-@@ -1,70 +1,13 @@
+@@ -1,73 +1,13 @@
  #include "../../zbuild.h"
  
--#if defined(__linux__)
+-#if defined(__linux__) && defined(HAVE_SYS_AUXV_H)
 -#  include <sys/auxv.h>
 -#  ifdef ARM_ASM_HWCAP
 -#    include <asm/hwcap.h>
@@ -16,6 +16,9 @@ index 195c949..06f1a3e 100644
 -#    define ID_AA64ISAR0_CRC32_VAL ID_AA64ISAR0_CRC32
 -#  endif
 -#elif defined(__APPLE__)
+-#  if !defined(_DARWIN_C_SOURCE)
+-#    define _DARWIN_C_SOURCE /* enable types aliases (eg u_int) */
+-#  endif
 -#  include <sys/sysctl.h>
 -#elif defined(_WIN32)
 -#  include <winapifamily.h>
