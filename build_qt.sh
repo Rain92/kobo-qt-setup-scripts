@@ -16,6 +16,8 @@ CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
 PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
 PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
+PARALLEL_JOBS=$(($(getconf _NPROCESSORS_ONLN 2> /dev/null || sysctl -n hw.ncpu 2> /dev/null || echo 0) + 1))
+
 CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -prefix /mnt/onboard/.adds/${LOCALREPO_KOBO} \
  -extprefix $PREFIX_KOBO \
@@ -87,7 +89,7 @@ if [ "$do_config" = true ] ; then
 fi
  
 if [ "$do_make" = true ] ; then
-    make -j5
+    make -j$PARALLEL_JOBS
 fi
 
 if [ "$do_install" = true ] ; then
