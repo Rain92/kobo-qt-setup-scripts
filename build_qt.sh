@@ -10,11 +10,11 @@ LOCALREPO_DESKTOP=qt-linux-5.15-kde-desktop
 
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
-SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
-CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
+SYSROOT=${SYSROOT:=/home/${USER}/kobo/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
+CROSS=${CROSS:=/home/${USER}/kobo/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
 
-PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
-PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
+PREFIX_KOBO=${PREFIX:-/home/${USER}/kobo/qt-bin/${LOCALREPO_KOBO}}
+PREFIX_DESKTOP=${PREFIX:-/home/${USER}/kobo/qt-bin/${LOCALREPO_DESKTOP}}
 
 PARALLEL_JOBS=$(($(getconf _NPROCESSORS_ONLN 2> /dev/null || sysctl -n hw.ncpu 2> /dev/null || echo 0) + 1))
 

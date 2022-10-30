@@ -5,7 +5,7 @@ LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
-SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
+SYSROOT=${SYSROOT:=/home/${USER}/kobo/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
 
 GDBDIR=${LIBDIR}/libs/gdb-10.2
 

@@ -1,20 +1,20 @@
 #!/bin/sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTVERSION=5.15.3
+QTVERSION=5.15.6
 QTNAME=5.15-kde
 QTVERSIONMAJOR=5
 
 export CROSS_TC=arm-kobo-linux-gnueabihf
 
-export SYSROOT=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
-QTBINPATH=/home/${USER}/qt-bin/qt-linux-$QTNAME-kobo
+export SYSROOT=/home/${USER}/kobo/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
+QTBINPATH=/home/${USER}/kobo/qt-bin/qt-linux-$QTNAME-kobo
 
 OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
 ADDSPATH=$DIR/deploy/libadditions
 DEPLOYPATH=/mnt/onboard/.adds/$OUTPUTNAME
-PLATFORMPLUGINBUILDPATH=/home/${USER}/Desktop/qtproject/build-koboplatformplugin-Kobo-Release
+PLATFORMPLUGINBUILDPATH=/home/${USER}/kobo/projects/build-koboplatformplugin-Kobo-Release
 
 rm -rf $TMPPATH
 
