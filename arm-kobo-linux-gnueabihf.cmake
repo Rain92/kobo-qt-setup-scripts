@@ -9,8 +9,8 @@ set(GCC_COMPILER_VERSION "" CACHE STRING "GCC Compiler version")
 set(GNU_MACHINE "arm-kobo-linux-gnueabihf" CACHE STRING "GNU compiler triple")
 set(ENABLE_NEON TRUE)
 
-set(TARGET_SYSROOT /home/$ENV{USER}/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/)
-set(CROSS_COMPILER /home/$ENV{USER}/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf)
+set(TARGET_SYSROOT /home/$ENV{USER}/kobo/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/)
+set(CROSS_COMPILER /home/$ENV{USER}/kobo/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf)
 
 set(CMAKE_SYSROOT ${TARGET_SYSROOT})
 set(ARM_LINUX_SYSROOT ${TARGET_SYSROOT})
@@ -39,7 +39,7 @@ set(CMAKE_CXX_COMPILER ${CROSS_COMPILER}-g++)
 set(CMAKE_AR ${CROSS_COMPILER}-ar)
 
 
-set(QT_COMPILER_FLAGS "-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mthumb -D__arm__ -D__ARM_NEON__ -fPIC -fpie -pie -fno-omit-frame-pointer -funwind-tables ")
+set(QT_COMPILER_FLAGS "-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mthumb -D__arm__ -D__ARM_NEON__ -fPIC -fpie -pie -fno-omit-frame-pointer -funwind-tables ${ADDITIONAL_CXX_FLAGS} ")
 set(QT_COMPILER_FLAGS_RELEASE "-O3 -pipe -ftree-vectorize -ffast-math -frename-registers -funroll-loops -fdevirtualize-at-ltrans -flto=5")
 set(QT_LINKER_FLAGS "-Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--no-merge-exidx-entries")
 
