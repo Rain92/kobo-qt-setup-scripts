@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e #-x
 
 USAGE="usage: build_qt.sh [kobo|desktop] [config] [make] [install]"
 
@@ -10,11 +10,11 @@ LOCALREPO_DESKTOP=qt-linux-5.15-kde-desktop
 
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
-SYSROOT=${SYSROOT:=/home/${USER}/kobo/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
-CROSS=${CROSS:=/home/${USER}/kobo/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
+SYSROOT=${SYSROOT:=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
+CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
 
-PREFIX_KOBO=${PREFIX:-/home/${USER}/kobo/qt-bin/${LOCALREPO_KOBO}}
-PREFIX_DESKTOP=${PREFIX:-/home/${USER}/kobo/qt-bin/${LOCALREPO_DESKTOP}}
+PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
+PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
 PARALLEL_JOBS=$(($(getconf _NPROCESSORS_ONLN 2> /dev/null || sysctl -n hw.ncpu 2> /dev/null || echo 0) + 1))
 
@@ -24,7 +24,7 @@ CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -xplatform ${CROSS_TC}-g++ \
  -sysroot ${SYSROOT} \
  -openssl-linked OPENSSL_PREFIX="${SYSROOT}/usr" \
- -qt-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
+ -system-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
  -no-sse2 -no-xcb -no-xcb-xlib -no-xkbcommon -no-tslib -no-icu -no-iconv -no-dbus -no-fontconfig \
  -nomake tests -nomake examples -no-compile-examples -no-opengl \
  -no-cups -no-pch \
@@ -49,7 +49,7 @@ config=$CONFIG_KOBO
 localrepo=$LOCALREPO_KOBO
 
 
-case  ${1:-kobo} in
+case ${1:-kobo} in
     kobo)
         platform=kobo
         config=$CONFIG_KOBO
@@ -84,10 +84,11 @@ done
 
 cd $localrepo
 
+
 if [ "$do_config" = true ] ; then
     ./configure $config
 fi
- 
+
 if [ "$do_make" = true ] ; then
     make -j$PARALLEL_JOBS
 fi

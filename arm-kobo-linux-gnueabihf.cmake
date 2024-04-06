@@ -9,8 +9,8 @@ set(GCC_COMPILER_VERSION "" CACHE STRING "GCC Compiler version")
 set(GNU_MACHINE "arm-kobo-linux-gnueabihf" CACHE STRING "GNU compiler triple")
 set(ENABLE_NEON TRUE)
 
-set(TARGET_SYSROOT /home/$ENV{USER}/kobo/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/)
-set(CROSS_COMPILER /home/$ENV{USER}/kobo/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf)
+set(TARGET_SYSROOT /home/$ENV{USER}/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/)
+set(CROSS_COMPILER /home/$ENV{USER}/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf)
 
 set(CMAKE_SYSROOT ${TARGET_SYSROOT})
 set(ARM_LINUX_SYSROOT ${TARGET_SYSROOT})
