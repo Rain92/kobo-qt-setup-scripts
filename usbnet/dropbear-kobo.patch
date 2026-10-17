@@ -1,0 +1,14 @@
+diff --git a/src/svr-authpubkey.c b/src/svr-authpubkey.c
+index 938b52d..150c227 100644
+--- a/src/svr-authpubkey.c
++++ b/src/svr-authpubkey.c
+@@ -595,6 +595,9 @@ static int checkpubkeyperms() {
+ 		if (strcmp(path, ses.authstate.pw_dir) == 0 || strcmp(path, "/") == 0) {
+ 			break;
+ 		}
++		/* Kobo: everything runs as root and the stock firmware has group/world writable
++		 * system directories (e.g. /usr), only check the directory holding the keys */
++		break;
+ 	}
+ 
+ 	/* all looks ok, return success */

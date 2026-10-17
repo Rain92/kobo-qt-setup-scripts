@@ -1,4 +1,15 @@
 libs/**
-qt-linux**/**
 deploy/**
-qt6/**
+# Qt 6: only the sources and builds, the scripts are tracked
+/qt*-src/
+/qt-*-build/
+/qt-*-host-bin/
+/qtbase/
+# Qt 5 (qt5/): the sources and builds, and its deploy folder
+qt5/qt-linux**/
+qt5/deploy/
+# build logs
+/*.log
+qt5/*.log
+# usbnet dropbear build
+usbnet/build/

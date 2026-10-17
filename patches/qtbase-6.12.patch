@@ -1,0 +1,43 @@
+diff --git a/src/corelib/global/qtypes.h b/src/corelib/global/qtypes.h
+index 96974636..cc1b0d50 100644
+--- a/src/corelib/global/qtypes.h
++++ b/src/corelib/global/qtypes.h
+@@ -179,7 +179,8 @@ static_assert(std::is_signed_v<qint128>,
+ 
+ #ifndef __cplusplus
+ // In C++ mode, we define below using QIntegerForSize template
+-static_assert(sizeof(ptrdiff_t) == sizeof(size_t), "Weird ptrdiff_t and size_t definitions");
++// glibc < 2.16 has no static_assert macro in <assert.h> for C11
++_Static_assert(sizeof(ptrdiff_t) == sizeof(size_t), "Weird ptrdiff_t and size_t definitions");
+ typedef ptrdiff_t qptrdiff;
+ typedef ptrdiff_t qsizetype;
+ typedef ptrdiff_t qintptr;
+diff --git a/src/corelib/plugin/qelfparser_p.cpp b/src/corelib/plugin/qelfparser_p.cpp
+index d251d647..740490fb 100644
+--- a/src/corelib/plugin/qelfparser_p.cpp
++++ b/src/corelib/plugin/qelfparser_p.cpp
+@@ -387,7 +387,9 @@ Q_DECL_UNUSED Q_DECL_COLD_FUNCTION static QDebug &operator<<(QDebug &d, ElfHeade
+     case EM_ALPHA:      d << ", Alpha"; break;
+     case EM_68K:        d << ", MC68000"; break;
+     case EM_ARM:        d << ", ARM"; break;
++#ifdef EM_AARCH64 // missing from older glibc headers (e.g. the Kobo sysroot)
+     case EM_AARCH64:    d << ", AArch64"; break;
++#endif
+ #ifdef EM_BLACKFIN
+     case EM_BLACKFIN:   d << ", Blackfin"; break;
+ #endif
+diff --git a/src/widgets/util/qscrollerproperties.cpp b/src/widgets/util/qscrollerproperties.cpp
+index 4cd9f1f9..7fc670ce 100644
+--- a/src/widgets/util/qscrollerproperties.cpp
++++ b/src/widgets/util/qscrollerproperties.cpp
+@@ -40,8 +40,8 @@ QScrollerPropertiesPrivate *QScrollerPropertiesPrivate::defaults()
+         spp.overshootDragDistanceFactor = qreal(1);
+         spp.overshootScrollDistanceFactor = qreal(0.5);
+         spp.overshootScrollTime = qreal(0.7);
+-        spp.hOvershootPolicy = QScrollerProperties::OvershootWhenScrollable;
+-        spp.vOvershootPolicy = QScrollerProperties::OvershootWhenScrollable;
++        spp.hOvershootPolicy = QScrollerProperties::OvershootAlwaysOff; // e-ink: no bounce animation
++        spp.vOvershootPolicy = QScrollerProperties::OvershootAlwaysOff; // e-ink: no bounce animation
+         spp.frameRate = QScrollerProperties::Standard;
+ 
+         systemDefaults = new QScrollerPropertiesPrivate(spp);

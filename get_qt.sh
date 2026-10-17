@@ -1,81 +1,49 @@
 #!/bin/bash
 set -e
 
-USAGE="usage: get_qt.sh [kobo|desktop] [clean]"
+USAGE="usage: get_qt.sh [clean]
+Clones Qt \${QT_VERSION} (default from config.sh) and applies the Kobo patches."
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/config.sh"
 
-REPO=https://invent.kde.org/qt/qt/qt5
-LOCALREPO_KOBO="${SCRIPT_DIR}/qt-linux-5.15-kde-kobo"
-LOCALREPO_DESKTOP="${SCRIPT_DIR}/qt-linux-5.15-kde-desktop"
-BRANCH=kde/5.15
-
-PATCH_PATH="${SCRIPT_DIR}/patches/qt5.15.patch"
-
-MODULES_BASE="qtbase qtcharts qtdeclarative qtgraphicaleffects qtimageformats qtnetworkauth qtquickcontrols2 qtsvg qtwebsockets"
-MODULES_DESKTOP="qttools qttranslations qtx11extras qtwayland"
-
-platform=kobo
-modules=$MODULES_BASE
-localrepo=$LOCALREPO_KOBO
 clean=false
-
-
-if [ $# -lt 1 ]; then
-	echo "Missing platform argument, defaulting to kobo"
-fi
-case  ${1:-kobo} in
-    kobo)
-        platform=kobo
-        modules=$MODULES_BASE
-        localrepo=$LOCALREPO_KOBO
-        ;;
-    desktop)
-        platform=desktop
-        modules="$MODULES_BASE $MODULES_DESKTOP"
-        localrepo=$LOCALREPO_DESKTOP
-        ;;
-    *)
-        echo "[!] $platform not supported!"
-        echo "${USAGE}"
-        exit 1
-        ;;
-esac
-
 while test $# -gt 0
 do
     case "$1" in
         clean) clean=true
             ;;
-        *)
+        -h|--help) echo "${USAGE}"; exit 0
+            ;;
+        *) echo "unknown argument: $1"; echo "${USAGE}"; exit 1
             ;;
     esac
     shift
 done
 
-
-if [ -d "$localrepo" ]; then
-    echo "Directory exists. Updating repo..."
-    git -C $localrepo pull
-else
-    git clone --branch $BRANCH $REPO $localrepo 
+if [ ! -d "$SRC_DIR" ]; then
+    git clone --branch v${QT_VERSION} --depth 1 $QT_REPO $SRC_DIR
 fi
 
-cd $localrepo
+cd $SRC_DIR
 
-git reset --hard
-if [ "$clean" = true ] ; then
-    git clean -fdx
-fi
+# Shallow clones of the needed submodules only; github mirrors allow fetching pinned commits by sha.
+git submodule update --init --recursive --depth 1 --jobs 8 $QT_MODULES_KOBO
 
-for mod in $modules; do
-    git submodule update --init --remote -- $mod
-    cd $mod
-    git reset --hard
+for mod in $QT_MODULES_KOBO; do
+    git -C $mod reset --hard
     if [ "$clean" = true ] ; then
-        git clean -fdx
+        git -C $mod clean -fdx
     fi
-    cd ..
 done
 
-git -C qtbase apply --verbose $PATCH_PATH
+# Patches are per qt minor version, e.g. patches/qtbase-6.12.patch
+QT_MINOR_VERSION=${QT_VERSION%.*}
+for mod in $QT_MODULES_KOBO; do
+    patch="${SCRIPT_DIR}/patches/${mod}-${QT_MINOR_VERSION}.patch"
+    if [ -f "$patch" ]; then
+        git -C $mod apply --verbose "$patch"
+    fi
+done
+
+# Device mkspec, needed for qmake based projects built against the kobo Qt
+cp -r "${SCRIPT_DIR}/mkspecs/devices/${CROSS_TC}-g++" qtbase/mkspecs/devices/
